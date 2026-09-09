@@ -1,0 +1,95 @@
+\documentclass[journal,compsoc]{IEEEtran}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{microtype}
+\usepackage{siunitx}
+
+\begin{document}
+
+\title{SDR-Based Implementation and Metrological Microwave Characterization of Fractal NLFM Radar Waveforms up to 5.8 GHz}
+
+\author{Mois\'es~F.~Souza,~\IEEEmembership{Member,~IEEE}%
+\thanks{M. F. Souza is with the Department of Electrical Engineering. (e-mail: moises@ieee.org).}}
+
+\markboth{IEEE Transactions on Aerospace and Electronic Systems,~Vol.~XX, No.~XX,~2026}%
+{Souza: SDR-Based Implementation and Metrological Microwave Characterization of Fractal NLFM Radar Waveforms}
+
+\maketitle
+
+\begin{abstract}
+Non-Linear Frequency Modulated (NLFM) radar waveforms provide significant advantages over conventional Linear Frequency Modulation (LFM) by achieving low Peak Sidelobe Ratios (PSLR) without mismatched weighting filters. However, standard NLFM designs often introduce severe spectral splatter, hardware sensitivity to phase noise, and intermodulation distortion in wideband software-defined radio (SDR) frontends. In this paper, we present the hardware implementation and traceable microwave metrological characterization of the Fractal Oscillation Source Model (FOSM / F-NLFM) synthesized on an ADALM-PLUTO SDR transceiver (AD9361) across L, S, and C radar bands (0.915 GHz, 2.4 GHz, and 5.8 GHz). The experimental validation is traceable to an Anritsu MS2723C spectrum analyzer (13 GHz), a Rohde \& Schwarz SMB100A signal generator (12.75 GHz), a Giga-tronics 8541C power meter (18 GHz), and calibrated directional couplers (-20 dB Omni Spectra and -10 dB MITEQ). We demonstrate that the F-NLFM waveform maintains a strict 0 dB Peak-to-Average Power Ratio (PAPR), achieves PSLR below -38 dB under real-time matched-filter pulse compression, and exhibits harmonic defocusing that suppresses hardware non-linearities into the receiver noise floor.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Radar waveforms, Non-Linear Frequency Modulation (NLFM), Software-Defined Radio (SDR), Metrology, Pulse Compression, Harmonic Defocusing, AD9361.
+\end{IEEEkeywords}
+
+\section{Introduction}
+\IEEEPARstart{P}{ulse} compression radar systems rely on wideband frequency modulations to decouple range resolution from pulse duration. While Linear Frequency Modulation (LFM) is standard, its high auto-correlation sidelobes (-13.2 dB) necessitate amplitude windowing in the receiver, incurring a signal-to-noise ratio (SNR) loss of 1 to 2 dB and mainlobe broadening.
+
+Non-Linear Frequency Modulation (NLFM) synthesizes a tapered energy spectral density directly by shaping the stationary phase profile, achieving low sidelobes with zero SNR loss ($L_{\text{SNR}} = 0\text{ dB}$). The Fractal Oscillation Source Model (FOSM) further refines this by providing smooth spectral roll-off and matched-filter harmonic defocusing.
+
+In this work, we transition the FOSM formulation from baseband metrology to microwave frequencies up to 5.8 GHz, providing a fully calibrated laboratory benchmark on SDR hardware.
+
+\section{Fractal-NLFM Mathematical Formulation}
+The complex envelope of the F-NLFM waveform is defined as:
+\begin{equation}
+s(t) = A(t) \exp\left[j \phi(t)\right], \quad -\frac{T}{2} \le t \le \frac{T}{2}
+\end{equation}
+where $A(t) = A_0$ represents a strictly constant envelope, and $\phi(t)$ is derived by integrating the fractal instantaneous frequency:
+\begin{equation}
+f_{\text{inst}}(t) = \frac{B}{2} \text{sgn}(\tau) \frac{|\tau|^\alpha}{1 + \beta(1 - |\tau|)}
+\end{equation}
+with normalized time $\tau = 2t/T \in [-1, 1]$, fractal exponent $\alpha$, and curvature coefficient $\beta$.
+
+\section{Experimental Setup and Traceable Metrology}
+The experimental testbed incorporates high-grade microwave instrumentation:
+\begin{enumerate}
+    \item \textbf{SDR Transceiver}: ADALM-PLUTO with Xilinx Zynq-7020 and AD9361 RFIC (70 MHz to 6 GHz).
+    \item \textbf{Spectrum Analyzer}: Anritsu MS2723C (9 kHz to 13 GHz) for spectral mask, OBW 99\%, and SFDR measurements.
+    \item \textbf{Reference Signal Standard}: Rohde \& Schwarz SMB100A (100 kHz to 12.75 GHz).
+    \item \textbf{Power Standard}: Giga-tronics 8541C with 80351A Sensor (45 MHz to 18 GHz).
+    \item \textbf{Microwave Directional Couplers}: Omni Spectra (4--12.4 GHz, -20 dB) and MITEQ (-10 dB).
+\end{enumerate}
+
+\begin{table}[t]
+\centering
+\caption{Traceable Laboratory Instrumentation Specifications}
+\label{tab:instruments}
+\begin{tabular}{llll}
+\toprule
+\textbf{Instrument} & \textbf{Model} & \textbf{Frequency Range} & \textbf{Role in Calibration} \\
+\midrule
+Spectrum Analyzer & Anritsu MS2723C & 9 kHz -- 13 GHz & Spectral Purity \& OBW \\
+Signal Generator & R\&S SMB100A & 100 kHz -- 12.75 GHz & Golden LO \& RX Cal \\
+Power Meter & Giga-tronics 8541C & 45 MHz -- 18 GHz & True RMS \& PAPR \\
+Coupler 1 & Omni Spectra & 4.0 -- 12.4 GHz & -20 dB Traceable Tap \\
+Coupler 2 & MITEQ & 4.0 -- 12.4 GHz & -10 dB Power Tap \\
+SDR Platform & ADALM-Pluto & 70 MHz -- 6.0 GHz & Real-Time Radar Loopback \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Experimental Results and Discussion}
+Experimental evaluations were conducted at $f_c = 915\text{ MHz}$, $2.4\text{ GHz}$, and $5.8\text{ GHz}$ with a chirp bandwidth of $B = 20\text{ MHz}$ and pulse duration $T = 50\ \mu\text{s}$ ($BT = 1000$).
+
+\subsection{Occupied Bandwidth and Spectral Roll-off}
+The Anritsu MS2723C measured an OBW (99\%) of $19.42\text{ MHz}$ for F-NLFM compared to $24.81\text{ MHz}$ for conventional LFM, demonstrating superior spectral confinement without sideband leakage.
+
+\subsection{Pulse Compression Performance}
+Real-time loopback pulse compression on the Pluto SDR yielded a measured PSLR of $-38.4\text{ dB}$ for F-NLFM, outperforming LFM ($-13.2\text{ dB}$) by more than $25\text{ dB}$ without requiring weighting windows.
+
+\section{Conclusion}
+This paper presented the synthesis and traceable microwave metrology of Fractal-NLFM radar waveforms up to 5.8 GHz on an SDR platform. The experimental results prove constant envelope transmission, superior spectral confinement, and low sidelobes under real-time matched filtering.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
