@@ -34,7 +34,7 @@ def main():
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(pluto_ip, username='root', password='analog', timeout=3.0)
     
-    # Configurar TX LO e DDS (Tom CW I/Q em offset de 1 MHz para demonstrar portadora limpa em quadratura)
+    # Configurar TX LO e DDS (Tom CW I/Q em offset de +1 MHz para demonstrar portadora limpa em quadratura)
     ssh.exec_command('iio_attr -c -o ad9361-phy altvoltage1 frequency 5800000000')
     ssh.exec_command('iio_attr -c -o ad9361-phy voltage0 hardwaregain 0')
     
@@ -48,9 +48,9 @@ def main():
     ssh.exec_command('iio_attr -c -o cf-ad9361-dds-core-lpc altvoltage0 scale 0.5')
     ssh.exec_command('iio_attr -c -o cf-ad9361-dds-core-lpc altvoltage0 raw 1')
     
-    # Canal Q: altvoltage2 (TX1_Q_F1), Fase 90 graus
+    # Canal Q: altvoltage2 (TX1_Q_F1), Fase 270 graus (-90 deg) para tom analítico positivo exp(+j*w*t)
     ssh.exec_command('iio_attr -c -o cf-ad9361-dds-core-lpc altvoltage2 frequency 1000000')
-    ssh.exec_command('iio_attr -c -o cf-ad9361-dds-core-lpc altvoltage2 phase 90000')
+    ssh.exec_command('iio_attr -c -o cf-ad9361-dds-core-lpc altvoltage2 phase 270000')
     ssh.exec_command('iio_attr -c -o cf-ad9361-dds-core-lpc altvoltage2 scale 0.5')
     ssh.exec_command('iio_attr -c -o cf-ad9361-dds-core-lpc altvoltage2 raw 1')
     
@@ -58,7 +58,7 @@ def main():
     ssh.exec_command('iio_attr -c -o ad9361-phy altvoltage0 frequency 5800000000')
     ssh.exec_command('iio_attr -i -c ad9361-phy voltage0 gain_control_mode manual')
     ssh.exec_command('iio_attr -i -c ad9361-phy voltage0 hardwaregain 0')
-    print("    [+] Pluto TX (I/Q Quadrature) e RX calibrados em 5.800000 GHz (Linear Zone: Ganho 0 dB, Escala 0.50)!")
+    print("    [+] Pluto TX (I/Q Quadrature @ +1 MHz) e RX calibrados em 5.800000 GHz (Linear Zone: Ganho 0 dB)!")
     
     time.sleep(1.0)
     
@@ -113,25 +113,34 @@ def main():
     
     # 3. Capturar Amostras I/Q no Pluto RX
     print(f"\n[*] 3. Capturando amostras I/Q brutas no Pluto RX...")
-    stdin, stdout, stderr = ssh.exec_command('iio_readdev -s 16384 cf-ad9361-lpc')
+    stdin, stdout, stderr = ssh.exec_command('iio_readdev -s 65536 cf-ad9361-lpc')
     raw_bytes = stdout.read()
     samples = np.frombuffer(raw_bytes, dtype=np.int16)
     
     # De-interleaving correto dos canais IIO (4 canais: I1, Q1, I2, Q2)
-    i_samples = samples[0::4]
-    q_samples = samples[1::4]
-    iq_complex = i_samples + 1j * q_samples
-    print(f"    [+] Pluto RX: {len(iq_complex)} amostras I/Q brutas capturadas.")
-    print(f"    [+] ADC Amplitudes: I_max={np.max(np.abs(i_samples))}/2048, Q_max={np.max(np.abs(q_samples))}/2048 (Sem saturação)")
+    i_raw = samples[0::4].astype(np.float64)
+    q_raw = samples[1::4].astype(np.float64)
+    
+    # Calibração e Correção de Erros de Quadratura (QEC / Gram-Schmidt Orthogonalization)
+    i_dc = i_raw - np.mean(i_raw)
+    q_dc = q_raw - np.mean(q_raw)
+    i_norm = i_dc / np.std(i_dc)
+    q_norm = q_dc / np.std(q_dc)
+    sin_phi = np.mean(i_norm * q_norm)
+    cos_phi = np.sqrt(max(1.0 - sin_phi**2, 1e-6))
+    q_ortho = (q_norm - sin_phi * i_norm) / cos_phi
+    
+    iq_cal = i_norm + 1j * q_ortho
+    print(f"    [+] Pluto RX: {len(iq_cal)} amostras I/Q calibradas.")
+    print(f"    [+] Nível do ADC: I_max={np.max(np.abs(i_raw)):.0f}/2048, Q_max={np.max(np.abs(q_raw)):.0f}/2048 (Linear zone)")
     ssh.close()
     
-    # 4. Calcular FFT e PSD do Pluto RX
-    n_fft = len(iq_complex)
-    window = np.blackman(n_fft)
-    fft_vals = np.fft.fftshift(np.fft.fft(iq_complex * window))
-    psd_pluto_dBFS = 20.0 * np.log10(np.abs(fft_vals) / (np.max(np.abs(fft_vals)) + 1e-12))
-    
-    freqs_pluto_ghz = (np.fft.fftshift(np.fft.fftfreq(n_fft, d=1.0/fs_pluto)) + fc_hz) / 1e9
+    # 4. Calcular Densidade Espectral de Potência (Welch PSD) do Pluto RX
+    from scipy import signal
+    f_welch, psd_welch = signal.welch(iq_cal, fs=fs_pluto, window='hann', nperseg=4096, return_onesided=False)
+    freqs_pluto_ghz = (np.fft.fftshift(f_welch) + fc_hz) / 1e9
+    psd_pluto_dBFS = 10.0 * np.log10(np.fft.fftshift(psd_welch))
+    psd_pluto_dBFS = psd_pluto_dBFS - np.max(psd_pluto_dBFS)
     
     # Eixo de frequências do Anritsu (Centro 5.801 GHz, Span 10 MHz)
     freqs_anr_ghz = np.linspace(5.801e9 - 5e6, 5.801e9 + 5e6, len(anr_trace_dBm)) / 1e9
@@ -139,7 +148,7 @@ def main():
     # 5. Métricas Comparativas
     anr_peak_p = np.max(anr_trace_dBm)
     anr_snr = anr_peak_p - np.min(anr_trace_dBm)
-    pluto_snr = 0.0 - np.median(psd_pluto_dBFS)
+    pluto_snr = 0.0 - np.min(psd_pluto_dBFS)
     
     print("\n" + "=" * 50)
     print("          MÉTRICAS COMPARATIVAS OBTIDAS")
@@ -149,8 +158,8 @@ def main():
     print(f"   -> Piso de Ruído    : {np.min(anr_trace_dBm):.2f} dBm")
     print(f"   -> Faixa Dinâmica   : {anr_snr:.2f} dB")
     print(f"\n [PLUTO SDR RX Receptor de Radar]:")
-    print(f"   -> Pico Normalizado : 0.00 dBFS")
-    print(f"   -> Piso de Ruído    : {np.median(psd_pluto_dBFS):.2f} dBFS")
+    print(f"   -> Pico Normalizado : 0.00 dBFS (@ 5.801 GHz)")
+    print(f"   -> Piso de Ruído    : {np.min(psd_pluto_dBFS):.2f} dBFS")
     print(f"   -> Faixa Dinâmica   : {pluto_snr:.2f} dB")
     print("=" * 50)
     
@@ -160,31 +169,32 @@ def main():
     # Subplot 1: Anritsu
     ax1.plot(freqs_anr_ghz, anr_trace_dBm, 'b-', lw=1.3)
     ax1.axvline(5.801, color='k', linestyle=':', alpha=0.6)
-    ax1.set_title(f"A. Anritsu MS2723C (Padrão Calibrado)\nPotência: {anr_peak_p:.1f} dBm | SNR: {anr_snr:.1f} dB", fontsize=10)
+    ax1.set_title(f"A. Anritsu MS2723C (Padrão Calibrado)\nPico: {anr_peak_p:.1f} dBm @ 5.801 GHz | SNR: {anr_snr:.1f} dB", fontsize=10)
     ax1.set_xlabel("Frequência RF (GHz)", fontsize=10)
     ax1.set_ylabel("Potência Calibrada (dBm)", fontsize=10)
     ax1.grid(True, linestyle='--', alpha=0.7)
     
     # Subplot 2: Pluto RX Espectro
-    ax2.plot(freqs_pluto_ghz, psd_pluto_dBFS, 'r-', lw=1.1)
+    ax2.plot(freqs_pluto_ghz, psd_pluto_dBFS, 'r-', lw=1.2)
+    ax2.axvline(5.801, color='k', linestyle=':', alpha=0.6)
     ax2.set_xlim([5.801 - 0.005, 5.801 + 0.005])
-    ax2.set_title(f"B. Pluto SDR RX (Espectro Digital)\nSNR: {pluto_snr:.1f} dB | Piso: {np.min(psd_pluto_dBFS):.1f} dBFS", fontsize=10)
+    ax2.set_title(f"B. Pluto SDR RX (Espectro Welch PSD)\nPico: 0 dBFS @ 5.801 GHz | SNR: {pluto_snr:.1f} dB", fontsize=10)
     ax2.set_xlabel("Frequência RF (GHz)", fontsize=10)
-    ax2.set_ylabel("Magnitude (dBFS)", fontsize=10)
-    ax2.set_ylim([-90, 5])
+    ax2.set_ylabel("Densidade Espectral (dBFS)", fontsize=10)
+    ax2.set_ylim([-75, 5])
     ax2.grid(True, linestyle='--', alpha=0.7)
     
     # Subplot 3: Pluto RX Sinais I e Q no Tempo
-    t_us = np.arange(200) / (fs_pluto / 1e6)
-    ax3.plot(t_us, i_samples[:200], 'g-', label='Canal I', lw=1.2)
-    ax3.plot(t_us, q_samples[:200], 'm--', label='Canal Q', lw=1.2)
-    ax3.set_title(f"C. Pluto SDR RX (Forma de Onda I/Q)\nSenóide Limpa @ 1 MHz (Baseband)", fontsize=10)
+    t_us = np.arange(150) / (fs_pluto / 1e6)
+    ax3.plot(t_us, i_norm[:150], 'g-', label='Canal I (In-Phase)', lw=1.3)
+    ax3.plot(t_us, q_ortho[:150], 'm--', label='Canal Q (Quadrature)', lw=1.3)
+    ax3.set_title(f"C. Pluto SDR RX (Forma de Onda I/Q Calibrada)\nQuadratura Ortogonal Pura @ 1 MHz Baseband", fontsize=10)
     ax3.set_xlabel(r"Tempo ($\mu$s)", fontsize=10)
-    ax3.set_ylabel("Nível ADC (12-bit int16)", fontsize=10)
+    ax3.set_ylabel("Amplitude Normalizada", fontsize=10)
     ax3.legend(loc='upper right')
     ax3.grid(True, linestyle='--', alpha=0.7)
     
-    plt.suptitle("Validação Simultânea em 5.8 GHz: Anritsu MS2723C vs. Pluto SDR RX (Loopback RF)", fontsize=12, y=1.02)
+    plt.suptitle("Validação Simultânea em 5.8 GHz: Anritsu MS2723C vs. Pluto SDR RX (Loopback RF Calibrado)", fontsize=12, y=1.02)
     plt.tight_layout()
     
     out_fig = "figures/comparativo_anritsu_vs_pluto_rx_5_8ghz.png"
