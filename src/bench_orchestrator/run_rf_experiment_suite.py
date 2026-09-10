@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from src.instrumentation.anritsu_ms2723c import AnritsuMS2723C
 from src.rf_sdr.pluto_fnlfm_transceiver import generate_fnlfm_baseband, matched_filter_compression
 
-def run_suite(anritsu_ip="192.168.1.187", carrier_freqs=["915MHz", "2.4GHz", "5.8GHz"]):
+def run_suite(anritsu_ip="192.168.1.187", carrier_freqs=["915MHz", "2.8GHz", "5.8GHz"]):
     print("=" * 70)
     print("  STARTING AUTOMATED RF METROLOGICAL SUITE (PLUTO SDR + ANRITSU MS2723C)")
     print("=" * 70)

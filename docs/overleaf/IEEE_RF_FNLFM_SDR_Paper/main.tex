@@ -24,7 +24,7 @@
 \maketitle
 
 \begin{abstract}
-Non-Linear Frequency Modulated (NLFM) radar waveforms provide significant advantages over conventional Linear Frequency Modulation (LFM) by achieving low Peak Sidelobe Ratios (PSLR) without mismatched weighting filters. However, standard NLFM designs often introduce severe spectral splatter, hardware sensitivity to phase noise, and intermodulation distortion in wideband software-defined radio (SDR) frontends. In this paper, we present the hardware implementation and traceable microwave metrological characterization of the Fractal Oscillation Source Model (FOSM / F-NLFM) synthesized on an ADALM-PLUTO SDR transceiver (AD9361) across L, S, and C radar bands (0.915 GHz, 2.4 GHz, and 5.8 GHz). The experimental validation is traceable to an Anritsu MS2723C spectrum analyzer (13 GHz), a Rohde \& Schwarz SMB100A signal generator (12.75 GHz), a Giga-tronics 8541C power meter (18 GHz), and calibrated directional couplers (-20 dB Omni Spectra and -10 dB MITEQ). We demonstrate that the F-NLFM waveform maintains a strict 0 dB Peak-to-Average Power Ratio (PAPR), achieves PSLR below -38 dB under real-time matched-filter pulse compression, and exhibits harmonic defocusing that suppresses hardware non-linearities into the receiver noise floor.
+Non-Linear Frequency Modulated (NLFM) radar waveforms provide significant advantages over conventional Linear Frequency Modulation (LFM) by achieving low Peak Sidelobe Ratios (PSLR) without mismatched weighting filters. However, standard NLFM designs often introduce severe spectral splatter, hardware sensitivity to phase noise, and intermodulation distortion in wideband software-defined radio (SDR) frontends. In this paper, we present the hardware implementation and traceable microwave metrological characterization of the Fractal Oscillation Source Model (FOSM / F-NLFM) synthesized on an ADALM-PLUTO SDR transceiver (AD9361) across L, S, and C radar bands (0.915 GHz, 2.8 GHz, and 5.8 GHz). The experimental validation is traceable to an Anritsu MS2723C spectrum analyzer (13 GHz), a Rohde \& Schwarz SMB100A signal generator (12.75 GHz), a Giga-tronics 8541C power meter (18 GHz), and calibrated directional couplers (-20 dB Omni Spectra and -10 dB MITEQ). We demonstrate that the F-NLFM waveform maintains a strict 0 dB Peak-to-Average Power Ratio (PAPR), achieves PSLR below -38 dB under real-time matched-filter pulse compression, and exhibits harmonic defocusing that suppresses hardware non-linearities into the receiver noise floor.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -78,7 +78,7 @@ SDR Platform & ADALM-Pluto & 70 MHz -- 6.0 GHz & Real-Time Radar Loopback \\
 \end{table}
 
 \section{Experimental Results and Discussion}
-Experimental evaluations were conducted at $f_c = 915\text{ MHz}$, $2.4\text{ GHz}$, and $5.8\text{ GHz}$ with a chirp bandwidth of $B = 20\text{ MHz}$ and pulse duration $T = 50\ \mu\text{s}$ ($BT = 1000$).
+Experimental evaluations were conducted at $f_c = 915\text{ MHz}$, $2.8\text{ GHz}$, and $5.8\text{ GHz}$ with a chirp bandwidth of $B = 20\text{ MHz}$ and pulse duration $T = 50\ \mu\text{s}$ ($BT = 1000$).
 
 \subsection{Occupied Bandwidth and Spectral Roll-off}
 The Anritsu MS2723C measured an OBW (99\%) of $19.42\text{ MHz}$ for F-NLFM compared to $24.81\text{ MHz}$ for conventional LFM, demonstrating superior spectral confinement without sideband leakage.
