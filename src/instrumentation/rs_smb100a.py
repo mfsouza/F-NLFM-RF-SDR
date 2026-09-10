@@ -7,7 +7,7 @@ import socket
 import time
 
 class RSSMB100A:
-    def __init__(self, ip="192.168.1.188", port=5025, timeout=5.0):
+    def __init__(self, ip="192.168.1.204", port=5025, timeout=5.0):
         self.ip = ip
         self.port = port
         self.timeout = timeout
