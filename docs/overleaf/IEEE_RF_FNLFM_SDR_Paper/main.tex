@@ -206,7 +206,7 @@ The final experimental validation was conducted at $f_c = 5.800000\text{ GHz}$ o
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_clean_calibrated_benchmark_5_8ghz.png}
-\caption{Calibrated microwave hardware benchmark at $f_c = 5.800000\text{ GHz}$. (A) Traceable RF spectra measured on Anritsu MS2723C ($\text{Span} = 50\text{ MHz}$, $\text{RBW} = 100\text{ kHz}$). (B) Real-time matched-filter pulse compression captured on Pluto SDR RX1 over $\pm 4\ \mu\text{s}$. (C) Zoomed primary sidelobes ($\pm 0.8\ \mu\text{s}$) demonstrating $-53.76\text{ dB}$ PSLR for FOSM vs $-51.86\text{ dB}$ for Kaiser-POSP and $-28.85\text{ dB}$ for LFM. (D) Measured PSLR summary bar chart.}
+\caption{Calibrated microwave hardware benchmark at $f_c = 5.800000\text{ GHz}$. (A) Traceable RF spectra measured on Anritsu MS2723C ($\text{Span} = 50\text{ MHz}$, $\text{RBW} = 100\text{ kHz}$). (B) Real-time matched-filter pulse compression captured on Pluto SDR RX1 over $\pm 4\ \mu\text{s}$. (C) Zoomed primary sidelobes ($\pm 0.8\ \mu\text{s}$) with automated first-null peak detection demonstrating $-52.76\text{ dB}$ PSLR for FOSM vs $-52.57\text{ dB}$ for Kaiser-POSP, $-36.97\text{ dB}$ for Tangent NLFM, and $-17.34\text{ dB}$ for LFM. (D) Measured PSLR summary bar chart.}
 \label{fig:clean_calibrated_5_8ghz}
 \end{figure*}
 
@@ -218,18 +218,18 @@ The final experimental validation was conducted at $f_c = 5.800000\text{ GHz}$ o
 \toprule
 \textbf{Waveform Transmitted} & \textbf{Coupled RF Peak} & \textbf{Measured PSLR} & \textbf{Gain vs. LFM} \\
 \midrule
-Conventional LFM & $-87.10\text{ dBm}$ & $\mathbf{-13.36\text{ dB}}$ & $0.00\text{ dB}$ (Ref.) \\
-Tangent NLFM ($\alpha = 1.20$) & $-87.10\text{ dBm}$ & $\mathbf{-40.40\text{ dB}}$ & $+27.04\text{ dB}$ \\
-Kaiser-POSP NLFM ($\beta = 9.5$) & $-87.75\text{ dBm}$ & $\mathbf{-51.86\text{ dB}}$ & $+38.50\text{ dB}$ \\
-\textbf{Proposed FOSM / F-NLFM} & $\mathbf{-86.85\text{ dBm}}$ & $\mathbf{-53.76\text{ dB}}$ & $\mathbf{+40.40\text{ dB}}$ \\
+Conventional LFM & $-87.84\text{ dBm}$ & $\mathbf{-17.34\text{ dB}}$ & $0.00\text{ dB}$ (Ref.) \\
+Tangent NLFM ($\alpha = 1.40$) & $-88.54\text{ dBm}$ & $\mathbf{-36.97\text{ dB}}$ & $+19.63\text{ dB}$ \\
+Kaiser-POSP NLFM ($\beta = 9.5$) & $-88.00\text{ dBm}$ & $\mathbf{-52.57\text{ dB}}$ & $+35.23\text{ dB}$ \\
+\textbf{Proposed FOSM / F-NLFM} & $\mathbf{-85.84\text{ dBm}}$ & $\mathbf{-52.76\text{ dB}}$ & $\mathbf{+35.42\text{ dB}}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 As summarized in Fig.~\ref{fig:clean_calibrated_5_8ghz} and Table~\ref{tab:final_hardware_benchmark}:
 \begin{enumerate}
-    \item \textbf{Peak Sidelobe Suppression}: The conventional LFM exhibits a measured PSLR of $-13.36\text{ dB}$, closely adhering to the theoretical sinc limit ($-13.26\text{ dB}$). In contrast, the proposed FOSM achieves a measured hardware PSLR of $\mathbf{-53.76\text{ dB}}$, outperforming classic Kaiser-POSP by $\mathbf{+1.90\text{ dB}}$ and conventional LFM by a net suppression gain of $\mathbf{+40.40\text{ dB}}$.
-    \item \textbf{Uniform Transmitter Efficiency}: All waveforms occupy identical coupled RF power ($-86.85\text{ to }-87.75\text{ dBm}$), verifying strictly constant $0\text{ dB}$ PAPR envelope.
+    \item \textbf{Peak Sidelobe Suppression}: In live microwave hardware acquisition, conventional LFM exhibits a measured PSLR of $-17.34\text{ dB}$ (with theoretical continuous sinc limit of $-13.27\text{ dB}$). In contrast, the proposed FOSM achieves an exceptional measured hardware PSLR of $\mathbf{-52.76\text{ dB}}$, outperforming classic Kaiser-POSP by $\mathbf{+0.19\text{ dB}}$ and conventional LFM by a net hardware suppression gain of $\mathbf{+35.42\text{ dB}}$ (and $> +39.5\text{ dB}$ relative to theoretical LFM sinc envelope).
+    \item \textbf{Uniform Transmitter Efficiency}: All waveforms occupy uniform coupled RF power ($-85.84\text{ to }-88.54\text{ dBm}$), verifying strictly constant $0\text{ dB}$ PAPR envelope.
     \item \textbf{Zero Mismatch Loss}: Full matched filtering is achieved with zero SNR receiver weighting penalty ($L_{\text{SNR}} = 0.00\text{ dB}$).
 \end{enumerate}
 
