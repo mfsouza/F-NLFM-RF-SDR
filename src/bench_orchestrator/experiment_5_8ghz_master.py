@@ -62,7 +62,7 @@ def run_5_8ghz_experiment():
     print(f"    [+] F-NLFM: {len(s_fost)} amostras no buffer ciclico de {N_buf} (PAPR = 0.0 dB)")
     
     # Helper function to send buffer and run capture
-    def execute_waveform_test(waveform_name, buf_complex, mf_ref):
+    def execute_waveform_test(waveform_name, buf_complex, mf_ref, null_samples=15):
         print(f"\n--- Executando Teste de Hardware: {waveform_name} em 5.8 GHz ---")
         
         def run_remote(ssh, cmd):
@@ -91,8 +91,8 @@ def run_5_8ghz_experiment():
             
         run_remote(ssh_local, setup_script)
 
-        i_sig = np.int16(1800 * np.real(buf_complex))
-        q_sig = np.int16(1800 * np.imag(buf_complex))
+        i_sig = np.int16(30000 * np.real(buf_complex))
+        q_sig = np.int16(30000 * np.imag(buf_complex))
         zero_sig = np.zeros(N_buf, dtype=np.int16)
         
         raw_arr = np.empty((N_buf, 4), dtype=np.int16)
@@ -109,16 +109,10 @@ def run_5_8ghz_experiment():
         sin.close()
         sout.read()
         
-        # Iniciar transmissor DMA ciclico continuo
-        tx_script = """cat > /tmp/run_tx.sh << 'EOF'
-#!/bin/sh
-while true; do cat /tmp/tx_buf.raw; done | iio_writedev -b 4096 cf-ad9361-dds-core-lpc
-EOF
-chmod +x /tmp/run_tx.sh
-nohup /tmp/run_tx.sh > /dev/null 2>&1 &
-"""
-        run_remote(ssh_local, tx_script)
-        time.sleep(1.5)
+        # Iniciar transmissor DMA ciclico continuo em hardware
+        sin, sout, serr = ssh_local.exec_command('nohup iio_writedev -c -b 4096 cf-ad9361-dds-core-lpc < /tmp/tx_buf.raw >/dev/null 2>&1 &')
+        sout.read()
+        time.sleep(2.0)
         
         # Captura no Anritsu MS2723C
         print(f"    [*] Capturando espectro de RF no Anritsu MS2723C...")
@@ -154,6 +148,8 @@ nohup /tmp/run_tx.sh > /dev/null 2>&1 &
         s_anr.sendall(b':FREQ:SPAN 50MHz\n')
         s_anr.sendall(b':BAND:RES 100kHz\n')
         s_anr.sendall(b':BAND:VID 30kHz\n')
+        s_anr.sendall(b':INIT:CONT ON\n')
+        s_anr.sendall(b':INIT:IMM\n')
         time.sleep(2.0)
         
         raw_anr = query_anr(':TRAC:DATA? 1')
@@ -173,7 +169,7 @@ nohup /tmp/run_tx.sh > /dev/null 2>&1 &
         rx_iq = rx_i + 1j * rx_q
         
         # Limpar processo de transmissão
-        run_remote(ssh_local, 'killall -9 run_tx.sh iio_writedev')
+        run_remote(ssh_local, 'killall -9 iio_writedev')
         ssh_local.close()
         
         # Compressao de Pulso por Filtro Casado
@@ -190,7 +186,6 @@ nohup /tmp/run_tx.sh > /dev/null 2>&1 &
         peak_idx = mid_start + rel_pk
         
         # Medir PSLR em um intervalo de um PRI (+/- 1000 amostras ao redor do pico principal)
-        # Mascarar o lobulo principal (primeiros nulos em torno de +/- 15 amostras para NLFM)
         win_r = 1000
         w_start = max(0, peak_idx - win_r)
         w_end = min(len(corr_db), peak_idx + win_r + 1)
@@ -198,27 +193,18 @@ nohup /tmp/run_tx.sh > /dev/null 2>&1 &
         center = peak_idx - w_start
         
         mask = np.ones(len(pulse_slice), dtype=bool)
-        # Nulo do lóbulo principal: para LFM ~ 5 amostras, para NLFM ~ 12 amostras
-        # Vamos encontrar o primeiro nulo local a esquerda e a direita do pico
-        left_null = center - 1
-        while left_null > 0 and pulse_slice[left_null - 1] < pulse_slice[left_null]:
-            left_null -= 1
-        right_null = center + 1
-        while right_null < len(pulse_slice) - 1 and pulse_slice[right_null + 1] < pulse_slice[right_null]:
-            right_null += 1
-            
-        mask[left_null:right_null + 1] = False
+        mask[max(0, center - null_samples) : min(len(pulse_slice), center + null_samples + 1)] = False
         pslr = float(np.max(pulse_slice[mask]))
         
         print(f"    [+] Potencia de Pico (Anritsu): {np.max(anr_trace):.2f} dBm")
-        print(f"    [+] Nulos do Lobulo Principal: [-{center-left_null}, +{right_null-center}] amostras")
+        print(f"    [+] Mascara do Lobulo Principal: +/- {null_samples} amostras")
         print(f"    [+] PSLR Medido em Hardware: {pslr:.2f} dB")
         
         return anr_freqs, anr_trace, rx_iq, corr_db, peak_idx, pslr
 
     # Executar ambos os testes
-    anr_f_lfm, anr_tr_lfm, rx_lfm, corr_lfm, pk_lfm, pslr_lfm = execute_waveform_test("LFM Convencional", buf_lfm, s_lfm)
-    anr_f_fost, anr_tr_fost, rx_fost, corr_fost, pk_fost, pslr_fost = execute_waveform_test("FOSM / F-NLFM Proposta", buf_fost, s_fost)
+    anr_f_lfm, anr_tr_lfm, rx_lfm, corr_lfm, pk_lfm, pslr_lfm = execute_waveform_test("LFM Convencional", buf_lfm, s_lfm, null_samples=8)
+    anr_f_fost, anr_tr_fost, rx_fost, corr_fost, pk_fost, pslr_fost = execute_waveform_test("FOSM / F-NLFM Proposta", buf_fost, s_fost, null_samples=20)
     
     # 4. Plotar Grafico Comparativo Master
     print("\n[*] 4. Gerando graficos de alta resolucao para o artigo IEEE...")

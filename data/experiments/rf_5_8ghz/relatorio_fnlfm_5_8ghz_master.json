@@ -3,10 +3,10 @@
     "largura_banda_mhz": 20.0,
     "duracao_pulso_us": 50.0,
     "produto_bt": 1000,
-    "pslr_lfm_db": -13.36087196182704,
-    "pslr_fnlfm_db": -40.06354656037949,
-    "melhoria_pslr_db": 26.702674598552452,
-    "potencia_pico_lfm_dbm": -10.7,
-    "potencia_pico_fnlfm_dbm": -10.7,
-    "piso_ruido_anritsu_dbm": -75.655998
+    "pslr_lfm_db": -3.494552788803042,
+    "pslr_fnlfm_db": -15.310838717308496,
+    "melhoria_pslr_db": 11.816285928505454,
+    "potencia_pico_lfm_dbm": -26.788,
+    "potencia_pico_fnlfm_dbm": -31.516001,
+    "piso_ruido_anritsu_dbm": -79.828003
 }
