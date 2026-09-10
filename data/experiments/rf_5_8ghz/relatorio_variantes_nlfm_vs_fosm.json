@@ -1,0 +1,82 @@
+{
+    "LFM (Refer\u00eancia)": {
+        "categoria": "Linear",
+        "pslr_db": -23.191865681487826,
+        "islr_db": -14.670136056187069,
+        "width_3db_ns": 32.552083333333336,
+        "width_6db_ns": 32.552083333333336,
+        "far_sidelobe_avg_db": -67.89930244150112
+    },
+    "Tangent NLFM (alpha=1.20)": {
+        "categoria": "Cl\u00e1ssica",
+        "pslr_db": -32.14808450666702,
+        "islr_db": -26.498396199546924,
+        "width_3db_ns": 32.552083333333336,
+        "width_6db_ns": 97.65625,
+        "far_sidelobe_avg_db": -69.7563398107731
+    },
+    "Tangent NLFM (alpha=1.42)": {
+        "categoria": "Cl\u00e1ssica",
+        "pslr_db": -12.766258933799694,
+        "islr_db": -12.018013213329159,
+        "width_3db_ns": 97.65625,
+        "width_6db_ns": 162.76041666666669,
+        "far_sidelobe_avg_db": -70.50088914882154
+    },
+    "Sinusoidal NLFM (S-Curve, alpha=0.45)": {
+        "categoria": "Cl\u00e1ssica",
+        "pslr_db": -23.920840338957984,
+        "islr_db": -18.820258307288192,
+        "width_3db_ns": 32.552083333333336,
+        "width_6db_ns": 97.65625,
+        "far_sidelobe_avg_db": -68.67356928156346
+    },
+    "Cubic NLFM (a1=0.6, a3=0.4)": {
+        "categoria": "Cl\u00e1ssica",
+        "pslr_db": -27.30329209332688,
+        "islr_db": -20.748629651845594,
+        "width_3db_ns": 32.552083333333336,
+        "width_6db_ns": 97.65625,
+        "far_sidelobe_avg_db": -68.69487986111521
+    },
+    "Taylor-POSP (a0=0.54, a1=0.46)": {
+        "categoria": "Cl\u00e1ssica POSP",
+        "pslr_db": -42.74649792375588,
+        "islr_db": -30.75000263071132,
+        "width_3db_ns": 32.552083333333336,
+        "width_6db_ns": 97.65625,
+        "far_sidelobe_avg_db": -69.92353568091079
+    },
+    "Kaiser-POSP (beta=9.5)": {
+        "categoria": "Cl\u00e1ssica POSP",
+        "pslr_db": -51.0610573615738,
+        "islr_db": -33.851104444380184,
+        "width_3db_ns": 97.65625,
+        "width_6db_ns": 97.65625,
+        "far_sidelobe_avg_db": -69.57650064493795
+    },
+    "FOSM F-NLFM (Padr\u00e3o: D=1.01, beta=9.5)": {
+        "categoria": "FOSM Proposta",
+        "pslr_db": -51.06790836266737,
+        "islr_db": -33.853026732840206,
+        "width_3db_ns": 97.65625,
+        "width_6db_ns": 97.65625,
+        "far_sidelobe_avg_db": -69.57379152541449
+    },
+    "FOSM F-NLFM (Multi-Escala: D=1.40)": {
+        "categoria": "FOSM Proposta",
+        "pslr_db": -51.082972382570446,
+        "islr_db": -33.85532819049041,
+        "width_3db_ns": 97.65625,
+        "width_6db_ns": 97.65625,
+        "far_sidelobe_avg_db": -69.59680441712801
+    },
+    "FOSM F-NLFM (Deep-Suppression: beta=12.0)": {
+        "categoria": "FOSM Proposta",
+        "pslr_db": -42.686881203339894,
+        "islr_db": -33.68516588081977,
+        "width_3db_ns": 97.65625,
+        "width_6db_ns": 162.76041666666669,
+        "far_sidelobe_avg_db": -69.19724875149963
+    }
+}

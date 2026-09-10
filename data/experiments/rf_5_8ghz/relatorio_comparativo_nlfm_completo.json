@@ -1,0 +1,48 @@
+{
+    "frequencia_portadora_ghz": 5.8,
+    "largura_banda_mhz": 20.0,
+    "duracao_pulso_us": 66.66666666666667,
+    "produto_bt": 1333.3333333333335,
+    "comparativo_modulacoes": {
+        "LFM Convencional": {
+            "pslr_db": -23.191865556383352,
+            "islr_db": -15.741833194162338,
+            "largura_3db_ns": 32.552083333333336,
+            "papr_db": 6.750292265873005e-15,
+            "mismatch_loss_db": 0.0
+        },
+        "Tangent NLFM (Cl\u00e1ssica)": {
+            "pslr_db": -43.132083393791525,
+            "islr_db": -31.539439902679263,
+            "largura_3db_ns": 97.65625,
+            "papr_db": 6.750292265873005e-15,
+            "mismatch_loss_db": 0.0
+        },
+        "Taylor-POSP NLFM (Cl\u00e1ssica)": {
+            "pslr_db": -47.04658541688655,
+            "islr_db": -31.752959098648667,
+            "largura_3db_ns": 32.552083333333336,
+            "papr_db": 6.750292265873005e-15,
+            "mismatch_loss_db": 0.0
+        },
+        "Kaiser-POSP NLFM (Pura)": {
+            "pslr_db": -52.24058319097645,
+            "islr_db": -34.10876240459008,
+            "largura_3db_ns": 97.65625,
+            "papr_db": 6.750292265873005e-15,
+            "mismatch_loss_db": 0.0
+        },
+        "FOSM / F-NLFM (Proposta)": {
+            "pslr_db": -52.24129399942583,
+            "islr_db": -34.11025765885317,
+            "largura_3db_ns": 97.65625,
+            "papr_db": 6.750292265873005e-15,
+            "mismatch_loss_db": 0.0
+        }
+    },
+    "hardware_anritsu": {
+        "potencia_pico_lfm_dbm": -80.531998,
+        "potencia_pico_fnlfm_dbm": -79.248001,
+        "piso_ruido_anritsu_dbm": -102.260002
+    }
+}
