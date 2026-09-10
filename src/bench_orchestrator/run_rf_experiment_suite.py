@@ -4,11 +4,16 @@ Orchestrates Pluto SDR transmission, Anritsu MS2723C spectral logging, and Match
 """
 
 import os
+import sys
 import json
 import time
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
+
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
 
 from src.instrumentation.anritsu_ms2723c import AnritsuMS2723C
 from src.rf_sdr.pluto_fnlfm_transceiver import generate_fnlfm_baseband, matched_filter_compression

@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class AnritsuMS2723C:
-    def __init__(self, ip="192.168.1.187", port=9001, timeout=5.0):
+    def __init__(self, ip="192.168.1.187", port=9001, timeout=15.0):
         self.ip = ip
         self.port = port
         self.timeout = timeout
@@ -27,17 +27,26 @@ class AnritsuMS2723C:
     def send_cmd(self, cmd):
         """Send SCPI command."""
         self.sock.sendall((cmd + "\n").encode("ascii"))
-        time.sleep(0.05)
+        time.sleep(0.1)
 
     def query(self, cmd):
         """Send SCPI command and receive response."""
         self.sock.sendall((cmd + "\n").encode("ascii"))
         data = b""
+        self.sock.settimeout(self.timeout)
         while True:
-            chunk = self.sock.recv(4096)
-            data += chunk
-            if len(chunk) < 4096 or b"\n" in chunk:
-                break
+            try:
+                chunk = self.sock.recv(4096)
+                if not chunk:
+                    break
+                data += chunk
+                if b"\n" in chunk or len(chunk) < 4096:
+                    # Give tiny sleep to check if more chunks follow
+                    break
+            except socket.timeout:
+                if data:
+                    break
+                raise
         return data.decode("latin-1", errors="ignore").strip()
 
     def set_center_freq(self, freq_str="5.8GHz"):

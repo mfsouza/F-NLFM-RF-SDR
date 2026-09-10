@@ -1,0 +1,11 @@
+{
+    "frequencia_portadora_ghz": 5.8,
+    "largura_banda_mhz": 20.0,
+    "duracao_pulso_us": 50.0,
+    "produto_bt": 1000,
+    "pslr_db": -49.613094329833984,
+    "pontos_anritsu": 133,
+    "max_potencia_dbm": -6.0,
+    "min_potencia_dbm": -72.487999,
+    "instrumento_anritsu": "\"Anritsu,MS2723C,1314138,2.30\""
+}

@@ -4,10 +4,16 @@ Executes F-NLFM fractal chirp generation, Anritsu spectral characterization, and
 """
 
 import os
+import sys
 import json
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+
+# Ensure root directory is in sys.path
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
 
 from src.instrumentation.anritsu_ms2723c import AnritsuMS2723C
 from src.rf_sdr.pluto_fnlfm_transceiver import generate_fnlfm_baseband, matched_filter_compression
@@ -46,7 +52,7 @@ def run_5_8ghz_experiment():
         pulse_width = 50e-6 # Duração do pulso: 50 us
         bw = 20e6        # Largura de banda do chirp: 20 MHz
         
-        t, f_inst, tx_iq = generate_fnlfm_baseband(fs=fs, pulse_width=pulse_width, bandwidth=bw, alpha=1.618, beta=0.85)
+        t, f_inst, tx_iq = generate_fnlfm_baseband(fs=fs, pulse_width=pulse_width, bandwidth=bw, beta=9.5, epsilon=0.002)
         print(f"    [+] Amostras I/Q geradas: {len(tx_iq)} pontos (Envelope plano |s(t)| = cte)")
         
         # 3. Compressão de Pulso (Matched Filter)

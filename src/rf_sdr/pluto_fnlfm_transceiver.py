@@ -6,28 +6,25 @@ Generates wideband F-NLFM baseband I/Q chirps, uploads to hardware buffer, trans
 import numpy as np
 from scipy import signal
 
-def generate_fnlfm_baseband(fs=30e6, pulse_width=50e-6, bandwidth=20e-6, alpha=1.618, beta=0.85):
+from src.rf_sdr.fost_fnlfm import generate_fnlfm_fost
+
+def generate_fnlfm_baseband(fs=30e6, pulse_width=50e-6, bandwidth=20e6, beta=9.5, epsilon=0.002):
     """
-    Synthesize discrete baseband complex envelope s(t) = exp(j * phi(t)) for Fractal-NLFM.
+    Synthesize discrete baseband complex envelope s(t) = exp(j * phi(t)) for Fractal-NLFM (FOST Engine).
     """
-    n_samples = int(fs * pulse_width)
-    t = np.linspace(-pulse_width/2, pulse_width/2, n_samples)
+    t, iq_signal, meta = generate_fnlfm_fost(
+        pulse_width=pulse_width,
+        bandwidth=bandwidth,
+        sample_rate=fs,
+        beta=beta,
+        fractal_dim=1.01,
+        gamma=1.61803398875,
+        epsilon=epsilon,
+        num_layers=5,
+        num_freq_points=4096
+    )
     
-    # Normalized time tau in [-1, 1]
-    tau = 2.0 * t / pulse_width
-    
-    # Instantaneous frequency profile f_inst(t) with fractal polynomial curvature
-    # f_inst(t) = (B/2) * sign(tau) * |tau|^alpha / (1 + beta * (1 - |tau|))
-    sign_tau = np.sign(tau)
-    abs_tau = np.abs(tau)
-    f_inst = (bandwidth / 2.0) * sign_tau * (abs_tau ** alpha) / (1.0 + beta * (1.0 - abs_tau) + 1e-12)
-    
-    # Integrate instantaneous frequency to obtain phase phi(t)
-    dt = 1.0 / fs
-    phi = 2.0 * np.pi * np.cumsum(f_inst) * dt
-    
-    # Complex baseband signal with constant envelope
-    iq_signal = np.exp(1j * phi)
+    f_inst = meta["f_instantaneous"]
     
     # Scale to 14-bit integer DAC range for AD9361 ([-2^14, 2^14 - 1])
     scale_factor = (2**14 - 1) * 0.8  # -2 dBFS margin to avoid DAC clipping
