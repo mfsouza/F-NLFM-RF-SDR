@@ -78,7 +78,45 @@ SDR Platform & ADALM-Pluto & 70 MHz -- 6.0 GHz & Real-Time Radar Loopback \\
 \end{table}
 
 \section{Experimental Results and Discussion}
-Experimental evaluations were conducted at $f_c = 915\text{ MHz}$, $2.8\text{ GHz}$, and $5.8\text{ GHz}$ with a chirp bandwidth of $B = 20\text{ MHz}$ and pulse duration $T = 50\ \mu\text{s}$ ($BT = 1000$).
+
+\subsection{C-Band 5.8 GHz Hardware Baseline and Dynamic Range Validation}
+To establish traceable baseline performance at the highest operational frequency of the AD9361 frontend ($f_c = 5.800000\text{ GHz}$), a simultaneous dual-instrument acquisition was conducted using the transmitter port (TX1) and receiver port (RX1) of the ADALM-Pluto SDR, benchmarked against the Anritsu MS2723C calibrated laboratory standard.
+
+The transmitter was configured with a local oscillator frequency $f_{\text{TX\_LO}} = 5.800000\text{ GHz}$ delivering a pure continuous wave (CW) carrier ($0\text{ dBm}$ nominal). The TX1 RF output was coupled via a $-20\text{ dB}$ Omni Spectra directional coupler directly into the RF input of the Anritsu MS2723C, while the through line was routed through a $-10\text{ dB}$ SMA fixed attenuator into the receiver port (RX1).
+
+To avoid baseband DC-offset notch distortion inherent to direct-conversion Zero-IF architectures, the RX1 receiver was operated in a Low-IF configuration with $f_{\text{RX\_LO}} = 5.799000\text{ GHz}$, translating the $5.800000\text{ GHz}$ RF carrier to an intermediate frequency of $f_{\text{IF}} = +1.000000\text{ MHz}$.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/comparativo_anritsu_vs_pluto_rx_5_8ghz.png}
+\caption{Simultaneous microwave characterization at $f_c = 5.800000\text{ GHz}$. (A) Traceable power spectrum measured by Anritsu MS2723C (Span = $10\text{ MHz}$, RBW = $30\text{ kHz}$, VBW = $10\text{ kHz}$). (B) Calibrated digital baseband spectrum reconstructed on Pluto SDR RX1. (C) Real-time ADC time-domain in-phase ($I$) and quadrature ($Q$) waveforms showing pure $1.0\text{ MHz}$ IF sinusoids with zero digital clipping.}
+\label{fig:rf_cw_comparison}
+\end{figure*}
+
+\begin{table}[t]
+\centering
+\caption{Simultaneous RF Metrology Benchmark at 5.800 GHz}
+\label{tab:cw_benchmark}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Parameter} & \textbf{Anritsu MS2723C} & \textbf{Pluto SDR RX1} \\
+\midrule
+Center Frequency ($f_c$) & $5.800000\text{ GHz}$ & $5.800000\text{ GHz}$ \\
+Peak Power / Level & $-10.70\text{ dBm}$ (Coupled) & $0.00\text{ dBFS}$ \\
+Noise Floor & $-75.66\text{ dBm}$ & $-41.22\text{ dBFS}$ \\
+Dynamic Range (SNR) & $64.96\text{ dB}$ & $41.22\text{ dB}$ \\
+ADC Full-Scale Excursion & --- & $\pm 900 / 2048$ ($44\%$) \\
+Phase Quadrature & --- & $90.0^\circ$ Orthogonal \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+As illustrated in Fig.~\ref{fig:rf_cw_comparison} and summarized in Table~\ref{tab:cw_benchmark}:
+\begin{itemize}
+    \item The Anritsu MS2723C standard (Fig.~\ref{fig:rf_cw_comparison}A) recorded a peak power of $-10.70\text{ dBm}$ at $5.800000\text{ GHz}$ with a calibrated SNR of $65.0\text{ dB}$ over a $10\text{ MHz}$ span.
+    \item The Pluto SDR RX1 (Fig.~\ref{fig:rf_cw_comparison}B) reconstructed the $5.800000\text{ GHz}$ RF carrier without residual image tones ($> 50\text{ dB}$ image rejection). The observed spectral skirt reflects the integrated fractional-N PLL phase noise ($-90\text{ dBc/Hz}$ at $100\text{ kHz}$ offset), compared to the YIG-tuned oscillator in the laboratory analyzer.
+    \item In the time domain (Fig.~\ref{fig:rf_cw_comparison}C), the 12-bit ADC captured clean sinusoidal waveforms at $1.0\text{ MHz}$ on both the $I_1$ (green) and $Q_1$ (magenta) channels, occupying $\pm 900$ counts out of $\pm 2048$ full-scale, confirming strictly linear operation without compression or clipping.
+\end{itemize}
 
 \subsection{Occupied Bandwidth and Spectral Roll-off}
 The Anritsu MS2723C measured an OBW (99\%) of $19.42\text{ MHz}$ for F-NLFM compared to $24.81\text{ MHz}$ for conventional LFM, demonstrating superior spectral confinement without sideband leakage.
