@@ -1,0 +1,12 @@
+{
+    "frequencia_portadora_ghz": 5.8,
+    "largura_banda_mhz": 20.0,
+    "duracao_pulso_us": 50.0,
+    "produto_bt": 1000,
+    "pslr_lfm_db": -13.36087196182704,
+    "pslr_fnlfm_db": -40.06354656037949,
+    "melhoria_pslr_db": 26.702674598552452,
+    "potencia_pico_lfm_dbm": -10.7,
+    "potencia_pico_fnlfm_dbm": -10.7,
+    "piso_ruido_anritsu_dbm": -75.655998
+}
