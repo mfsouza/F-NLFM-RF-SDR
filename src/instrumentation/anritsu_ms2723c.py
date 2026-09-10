@@ -30,19 +30,33 @@ class AnritsuMS2723C:
         time.sleep(0.1)
 
     def query(self, cmd):
-        """Send SCPI command and receive response."""
+        """Send SCPI command and receive complete response."""
         self.sock.sendall((cmd + "\n").encode("ascii"))
         data = b""
         self.sock.settimeout(self.timeout)
+        expected_len = None
         while True:
             try:
-                chunk = self.sock.recv(4096)
+                chunk = self.sock.recv(8192)
                 if not chunk:
                     break
                 data += chunk
-                if b"\n" in chunk or len(chunk) < 4096:
-                    # Give tiny sleep to check if more chunks follow
-                    break
+                
+                # Check for IEEE 488.2 block header to determine exact length
+                if expected_len is None and data.startswith(b"#"):
+                    try:
+                        num_digits = int(chr(data[1]))
+                        payload_len = int(data[2:2 + num_digits].decode("ascii"))
+                        expected_len = 2 + num_digits + payload_len
+                    except Exception:
+                        pass
+                        
+                if expected_len is not None:
+                    if len(data) >= expected_len:
+                        break
+                else:
+                    if b"\n" in data:
+                        break
             except socket.timeout:
                 if data:
                     break
