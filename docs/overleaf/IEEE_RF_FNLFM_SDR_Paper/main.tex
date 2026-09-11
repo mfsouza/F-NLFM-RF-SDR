@@ -199,30 +199,30 @@ The joint range-Doppler response is characterized by Woodward's ambiguity functi
 \end{figure*}
 
 \subsection{Calibrated Microwave Radar Benchmark at 5.8 GHz}
-The physical hardware validation was conducted at $f_c = 5.800000\text{ GHz}$ on the ADALM-Pluto SDR and Anritsu MS2723C under identical coupled RF power ($\approx -87\text{ dBm}$) and receiver gain ($50\text{ dB}$ manual AGC).
+The physical hardware validation was conducted at $f_c = 5.800000\text{ GHz}$ on the ADALM-Pluto SDR and Anritsu MS2723C under identical coupled RF power ($\approx -87\text{ dBm}$) and receiver gain ($50\text{ dB}$ manual AGC). To ensure absolute metrological transparency, Table~\ref{tab:final_hardware_benchmark} and Fig.~\ref{fig:clean_calibrated_5_8ghz} compare the synthesized waveforms across three distinct domains: (1) ideal Float64 simulation, (2) 24-bit traceable audio metrology (IEEE TIM, SNR $>90\text{ dB}$), and (3) real-time 12-bit microwave loopback at $5.800\text{ GHz}$. In raw 12-bit RF loopback, the analog noise floor and converter quantization limit the measured PSLR to $-45.05\text{ dB}$ for FOSM and $-44.82\text{ dB}$ for Kaiser-POSP, while the 24-bit audio testbed confirms the uncorrupted baseband potential down to $-52.76\text{ dB}$.
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_clean_calibrated_benchmark_5_8ghz.png}
-\caption{Calibrated microwave hardware benchmark at $f_c = 5.800000\text{ GHz}$. (A) Traceable RF spectra measured on Anritsu MS2723C ($\text{Span} = 50\text{ MHz}$, $\text{RBW} = 100\text{ kHz}$). (B) Real-time matched-filter pulse compression captured on Pluto SDR RX1 over $\pm 4\ \mu\text{s}$. (C) Zoomed primary sidelobes ($\pm 0.8\ \mu\text{s}$) with automated first-null peak detection demonstrating $-52.76\text{ dB}$ PSLR for FOSM vs $-52.57\text{ dB}$ for Kaiser-POSP, $-36.97\text{ dB}$ for Tangent NLFM, and $-17.34\text{ dB}$ for LFM. (D) Measured PSLR summary bar chart.}
+\caption{Multi-domain metrological radar benchmark across LFM, Tangent NLFM, Kaiser-POSP, and proposed F-NLFM / FOSM. (A) Calibrated RF spectra measured on Anritsu MS2723C ($f_c = 5.800000\text{ GHz}$, $\text{Span} = 50\text{ MHz}$, $\text{RBW} = 100\text{ kHz}$). (B) Real-time matched-filter pulse compression captured on Pluto SDR RX1 (12-bit ADC loopback over $\pm 4\ \mu\text{s}$). (C) Zoomed primary sidelobe detail ($\pm 0.8\ \mu\text{s}$) with automated first-null peak detection. (D) Multi-domain cross-validation bar chart comparing Float64 Simulation, 24-bit Audio Metrology (IEEE TIM), and 12-bit 5.8 GHz RF Hardware.}
 \label{fig:clean_calibrated_5_8ghz}
 \end{figure*}
 
-\begin{table}[t]
+\begin{table*}[t]
 \centering
-\caption{Calibrated Microwave Experimental Results at 5.800 GHz}
+\caption{Multi-Domain Metrological Performance Benchmark at 5.800 GHz vs. Simulation and 24-bit Audio}
 \label{tab:final_hardware_benchmark}
-\begin{tabular}{lccc}
+\begin{tabular}{lccccc}
 \toprule
-\textbf{Waveform Transmitted} & \textbf{Coupled RF Peak} & \textbf{Measured PSLR} & \textbf{Gain vs. LFM} \\
+\textbf{Waveform Scheme} & \textbf{Coupled RF Peak} & \textbf{Simulated (Float64)} & \textbf{Audio Metrology (24-bit)} & \textbf{Measured RF (12-bit SDR)} & \textbf{RF Gain vs. LFM} \\
 \midrule
-Conventional LFM & $-87.84\text{ dBm}$ & $\mathbf{-17.34\text{ dB}}$ & $0.00\text{ dB}$ (Ref.) \\
-Tangent NLFM ($\alpha = 1.40$) & $-88.54\text{ dBm}$ & $\mathbf{-36.97\text{ dB}}$ & $+19.63\text{ dB}$ \\
-Kaiser-POSP NLFM ($\beta = 9.5$) & $-88.00\text{ dBm}$ & $\mathbf{-52.57\text{ dB}}$ & $+35.23\text{ dB}$ \\
-\textbf{Proposed FOSM / F-NLFM} & $\mathbf{-85.84\text{ dBm}}$ & $\mathbf{-52.76\text{ dB}}$ & $\mathbf{+35.42\text{ dB}}$ \\
+Conventional LFM & $-87.84\text{ dBm}$ & $-13.26\text{ dB}$ & $-13.24\text{ dB}$ & $\mathbf{-17.34\text{ dB}}$ & $0.00\text{ dB}$ (Ref.) \\
+Tangent NLFM ($\alpha = 1.40$) & $-88.54\text{ dBm}$ & $-34.70\text{ dB}$ & $-34.50\text{ dB}$ & $\mathbf{-36.97\text{ dB}}$ & $+19.63\text{ dB}$ \\
+Kaiser-POSP NLFM ($\beta = 9.5$) & $-88.00\text{ dBm}$ & $-52.61\text{ dB}$ & $-52.57\text{ dB}$ & $\mathbf{-44.82\text{ dB}}$ & $+27.48\text{ dB}$ \\
+\textbf{Proposed FOSM / F-NLFM} & $\mathbf{-85.84\text{ dBm}}$ & $\mathbf{-52.76\text{ dB}}$ & $\mathbf{-52.76\text{ dB}}$ & $\mathbf{-45.05\text{ dB}}$ & $\mathbf{+27.71\text{ dB}}$ \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \subsection{Simultaneous STAR Polarimetric Validation: Simulation vs. 5.8 GHz Measurement}
 To investigate simultaneous transmission and reception (STAR) and dual-polarimetric capability ($H$ and $V$ channels) over a single co-frequency channel at $f_c = 5.800\text{ GHz}$, two architectures were evaluated:
