@@ -240,13 +240,13 @@ To investigate simultaneous transmission and reception (STAR) and dual-polarimet
 
 As demonstrated in Fig.~\ref{fig:star_sim_vs_measured}, the experimental hardware measurements converge with theoretical simulations within $<0.4\text{ dB}$:
 \begin{itemize}
-    \item \textbf{Channel H Isolation}: Channel $V$ cross-talk is suppressed to $-30.55\text{ dB}$ ($30.55\text{ dB}$ isolation), preserving the primary peak $-52.76\text{ dB}$ PSLR.
+    \item \textbf{Channel H Isolation}: Channel $V$ cross-talk is suppressed to $-30.55\text{ dB}$ ($30.55\text{ dB}$ isolation), preserving the clean $-45.05\text{ dB}$ RF loopback PSLR.
     \item \textbf{Channel V Isolation}: Channel $H$ cross-talk is suppressed to $-30.68\text{ dB}$ ($30.68\text{ dB}$ isolation).
-    \item \textbf{Zero SNR Penalty}: Both channels maintain optimal matched filtering ($L_{\text{SNR}} = 0.00\text{ dB}$).
+    \item \textbf{Zero SNR Penalty}: Both channels maintain authentic matched filtering ($L_{\text{SNR}} = 0.00\text{ dB}$).
 \end{itemize}
 
 \section{Conclusion}
-This paper presented the mathematical foundation, comprehensive benchmark against classical NLFMs (Tangent, Taylor, Kaiser-POSP), and traceable microwave metrology of Fractal NLFM (FOSM) radar waveforms up to 5.8 GHz. The experimental hardware validation on the ADALM-Pluto SDR and Anritsu MS2723C spectrum analyzer confirms an experimental PSLR of $\mathbf{-52.76\text{ dB}}$ ($+35.42\text{ dB}$ over LFM), zero mismatch SNR loss ($L_{\text{SNR}} = 0.00\text{ dB}$), strictly constant $0\text{ dB}$ PAPR envelope, and conjugate STAR polarimetric channel isolation exceeding $>30.5\text{ dB}$.
+This paper presented the mathematical foundation, comprehensive benchmark against classical NLFMs (Tangent, Taylor, Kaiser-POSP), and traceable microwave metrology of Fractal NLFM (FOSM) radar waveforms up to 5.8 GHz. The multi-domain validation confirms a theoretical PSLR of $\mathbf{-52.76\text{ dB}}$ ($\mathbf{-47.53\text{ dB}}$ in 24-bit audio loopback and $\mathbf{-45.05\text{ dB}}$ in 12-bit 5.8 GHz RF loopback, delivering a $+27.71\text{ dB}$ gain over measured LFM), zero mismatch SNR loss ($L_{\text{SNR}} = 0.00\text{ dB}$), strictly constant $0\text{ dB}$ PAPR envelope, and conjugate STAR polarimetric channel isolation exceeding $>30.5\text{ dB}$ (in strict conformity with the $10\log_{10}(BT) \approx 31.25\text{ dB}$ bound).
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}
