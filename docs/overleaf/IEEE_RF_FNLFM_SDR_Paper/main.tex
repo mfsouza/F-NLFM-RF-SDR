@@ -178,10 +178,10 @@ To suppress these sidelobes, conventional radar systems apply amplitude weightin
 Furthermore, the radar range resolution can be scaled arbitrarily by expanding the SDR operational bandwidth. Since the AD9361 transceiver supports instantaneous bandwidths up to $B = 56\text{ MHz}$, the FOSM range resolution improves to $\Delta R = \frac{c \gamma}{2B} \approx 1.2\text{ m}$ while maintaining over $52.7\text{ dB}$ of clean dynamic range for resolving low-RCS targets in high-clutter environments.
 
 \subsection{Woodward Ambiguity Surface and Doppler Tolerance Analysis}
-The joint range-Doppler response is characterized by Woodward's ambiguity function $\chi(\tau, f_d) = \int_{-\infty}^{+\infty} s(t + \tau/2) s^*(t - \tau/2) e^{j 2\pi f_d t} \, dt$. As illustrated in Fig.~\ref{fig:woodward_ambiguity_3d}:
+The joint range-Doppler response is characterized by Woodward's ambiguity function $\chi(\tau, f_d) = \int_{-\infty}^{+\infty} s(t + \tau/2) s^*(t - \tau/2) e^{j 2\pi f_d t} \, dt$. As illustrated in Fig.~\ref{fig:woodward_ambiguity_3d} and Fig.~\ref{fig:doppler_filter_bank}:
 \begin{enumerate}
     \item \textbf{LFM Doppler Ridge vs. FOSM Thumbtack}: Conventional LFM exhibits a continuous diagonal ambiguity ridge ($\Delta\tau = -f_d / K$), which maintains peak correlation at the cost of range estimation bias ($\Delta R = -c f_d / 2K = -25.0\text{ m}$ for $f_d = 50\text{ kHz}$). In contrast, FOSM synthesizes an isolated thumbtack response that eliminates range-Doppler coupling ($\Delta R = 0.00\text{ m}$) while bounding far sidelobes to $-52.76\text{ dB}$.
-    \item \textbf{Doppler Mismatch and Processing Strategy}: For high radial velocities ($f_d = 50\text{ kHz}$, corresponding to Mach 3.8 at $5.800\text{ GHz}$), the uncompensated Doppler loss of FOSM is $2.47\text{ dB}$ (identical to Kaiser-POSP and substantially lower than Tangent NLFM's $4.45\text{ dB}$). In operational radar systems, a baseband Doppler Filter Bank ($M=8$ channels with $\Delta f_d = 1/T \approx 15\text{ kHz}$) bounds the residual Doppler mismatch loss to $<0.20\text{ dB}$ across the entire velocity profile.
+    \item \textbf{Doppler Mismatch and Filter Bank Restoration}: For high radial velocities ($f_d = 50\text{ kHz}$, corresponding to Mach 3.8 at $5.800\text{ GHz}$), the uncompensated Doppler loss of FOSM is $2.47\text{ dB}$ (identical to Kaiser-POSP and substantially lower than Tangent NLFM's $4.45\text{ dB}$). As demonstrated in Fig.~\ref{fig:doppler_filter_bank}(D), an SDR baseband Doppler Filter Bank ($M=9$ channels with $\Delta f_d = 12.5\text{ kHz}$) restores the full $-52.7\text{ dB}$ PSLR and bounds residual Doppler loss to $<0.15\text{ dB}$ across the entire velocity profile.
 \end{enumerate}
 
 \begin{figure*}[t]
@@ -189,6 +189,13 @@ The joint range-Doppler response is characterized by Woodward's ambiguity functi
 \includegraphics[width=\textwidth]{figures/fig_woodward_ambiguity_3d_comparison.png}
 \caption{Woodward ambiguity surface $|\chi(\tau, f_d)|$ and characteristic cuts. (A) Conventional LFM 3D surface illustrating the diagonal range-Doppler ridge. (B) Proposed F-NLFM / FOSM 3D surface illustrating the isolated thumbtack response with $-52.76\text{ dB}$ sidelobe floor. (C) 2D contour comparison in $(\tau, f_d)$ plane. (D) Ambiguity cuts at $f_d = 0$ and $f_d = 20\text{ kHz}$.}
 \label{fig:woodward_ambiguity_3d}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_doppler_filter_bank_benchmark.png}
+\caption{Doppler mismatch and real-time SDR filter bank compensation. (A) LFM range-Doppler time shift ($\Delta\tau = -f_d/K$, up to $-166.7\text{ ns}$). (B) FOSM shift invariance ($\Delta\tau = 0\text{ ns}$) with thumbtack peak attenuation. (C) Doppler mismatch loss curves ($0$ to $60\text{ kHz}$) comparing LFM, Tangent NLFM, and FOSM. (D) Doppler Filter Bank ($M=9$ channels, $\Delta f_d = 12.5\text{ kHz}$) restoring $-52.7\text{ dB}$ PSLR for a Mach 3.5 target ($f_d = 45\text{ kHz}$) with only $0.08\text{ dB}$ residual loss.}
+\label{fig:doppler_filter_bank}
 \end{figure*}
 
 \subsection{Calibrated Microwave Radar Benchmark at 5.8 GHz}
