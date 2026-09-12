@@ -77,7 +77,7 @@ where:
     \end{equation}
     with fractal dimension $D = 1.05$, $N = 6$ geometric layers, and coupling factor $\epsilon = 0.0035$ ($0.35\%$).
     
-    \item $\Lambda(f) = |f_{\text{norm}}|^4$ is the conical Central Notch attenuation function, which suppresses energy dependence at $f=0\text{ Hz}$ to eliminate baseband DC-notch degradation in Zero-IF SDR architectures.
+    \item $\Lambda(f) = |f_{\text{norm}}|^4$ is the conical Central Notch attenuation function. Unlike legacy superheterodyne radars (which require bulky analog image-reject filters to downconvert to intermediate frequencies such as $60\text{ MHz}$), modern agile SDR transceivers (such as the AD9361) operate on direct-conversion Zero-IF architectures ($\text{IF}=0\text{ Hz}$). While Zero-IF eliminates image frequencies and drastically cuts size, weight, and power (SWaP), it inherently exhibits local oscillator (LO) leakage, necessitating an analog/digital high-pass DC-blocking notch filter at $0\text{ Hz}$. Classical NLFMs (such as Kaiser-POSP) concentrate maximum energy at $0\text{ Hz}$ and thus suffer up to $+15\text{ dB}$ of sidelobe degradation when digitized. By naturally sculpting a deterministic spectral null at $f=0\text{ Hz}$, $\Lambda(f)$ shields F-NLFM from DC-notch distortion, establishing an ideal hardware-waveform co-design for Zero-IF SDR transceivers.
 \end{enumerate}
 
 \subsection{Mathematical Proof of Destructive Sidelobe Cancellation}
