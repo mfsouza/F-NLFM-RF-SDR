@@ -108,7 +108,7 @@ This mathematically optimizes the theoretical PSLR down from $-52.57\text{ dB}$ 
 \section{Experimental Setup and Traceable Metrology}
 The experimental testbed incorporates high-grade microwave instrumentation:
 \begin{enumerate}
-    \item \textbf{SDR Transceiver}: Pluto+ SDR platform integrating a Xilinx Zynq-7020 SoC (\texttt{XC7Z020CLG400-1}), AD9361 RFIC (70 MHz to 6 GHz), 0.5 ppm TCXO reference, and Gigabit Ethernet (RGMII 1000BASE-T RJ45) interface.
+    \item \textbf{SDR Transceiver}: PlutoSky industrial SDR platform integrating an industrial-grade Xilinx Zynq-7020 SoC (\texttt{XC7Z020-2CLG400I}, $-40^\circ\text{C}$ to $+100^\circ\text{C}$), Analog Devices AD9361 RFIC (70 MHz to 6 GHz), 40.000 MHz TCXO reference ($\pm 0.5\text{ ppm}$), CNC-machined EMI shielding, and Gigabit Ethernet (RGMII 1000BASE-T RJ45) interface.
     \item \textbf{Spectrum Analyzer}: Anritsu MS2723C (9 kHz to 13 GHz) for calibrated RF spectrum and noise floor characterization.
     \item \textbf{Reference Signal Standard}: Rohde \& Schwarz SMB100A (100 kHz to 12.75 GHz).
     \item \textbf{Power Standard}: Giga-tronics 8541C with 80351A Sensor (45 MHz to 18 GHz).
@@ -129,7 +129,7 @@ Signal Generator & R\&S SMB100A & 100 kHz -- 12.75 GHz & Golden LO \& RX Cal \\
 Power Meter & Giga-tronics 8541C & 45 MHz -- 18 GHz & True RMS \& PAPR \\
 Coupler 1 & Omni Spectra & 4.0 -- 12.4 GHz & -20 dB Traceable Tap \\
 Coupler 2 & MITEQ & 4.0 -- 12.4 GHz & -10 dB Power Tap \\
-SDR Platform & Pluto+ (Zynq-7020) & 70 MHz -- 6.0 GHz & Real-Time Radar Loopback \\
+SDR Platform & PlutoSky (Zynq-7020) & 70 MHz -- 6.0 GHz & Real-Time Radar Loopback \\
 Digital Multimeter & Philips PM2525 & DC / AC / Temp. & Ambient Mon. ($20.9^\circ\text{C}$) \\
 \bottomrule
 \end{tabular}
@@ -248,13 +248,13 @@ As demonstrated in Fig.~\ref{fig:star_sim_vs_measured}, the experimental hardwar
 \end{itemize}
 
 \subsection{Real-Time FPGA Implementation and Hardware Resource Footprint}
-To evaluate the operational feasibility of embedding the proposed FOSM waveform into real-time radar exciters and tactical SDR transceivers, the digital generation pipeline was synthesized and mapped to the Xilinx Zynq-7020 System-on-Chip (SoC) (\texttt{XC7Z020CLG400-1}), which hosts the baseband digital front-end of the ADALM-Pluto.
+To evaluate the operational feasibility of embedding the proposed FOSM waveform into real-time radar exciters and tactical SDR transceivers, the digital generation pipeline was synthesized and mapped to the industrial-grade Xilinx Zynq-7020 System-on-Chip (SoC) (\texttt{XC7Z020-2CLG400I}), which hosts the baseband digital front-end of the PlutoSky SDR.
 
 The transmitter engine operates on a Direct Digital Synthesizer (DDS) Look-Up Table (LUT) architecture coupled to an AXI4-Stream master interface. The non-linear phase profile $\phi_{\text{FOSM}}(t)$ is pre-computed offline via analytical ISPA, producing $N = 2048$ complex baseband samples in 16-bit signed quadrature ($16\text{ bits } I + 16\text{ bits } Q = 32\text{ bits/sample}$, total footprint $65.536\text{ kbits}$). As detailed in Table~\ref{tab:fpga_resources}, this table is accommodated entirely within a single primitive $36\text{ kbit}$ Block RAM (RAMB36E1) configured in dual-port mode, consuming only $\mathbf{0.71\%}$ of the available BRAM on the chip.
 
 \begin{table}[t]
 \centering
-\caption{FPGA Logic and Memory Resource Utilization on Xilinx Zynq-7020 SoC (\texttt{XC7Z020CLG400-1}, $N=2048$ samples)}
+\caption{FPGA Logic and Memory Resource Utilization on Xilinx Zynq-7020 SoC (\texttt{XC7Z020-2CLG400I}, $N=2048$ samples)}
 \label{tab:fpga_resources}
 \begin{tabular}{lccc}
 \toprule
