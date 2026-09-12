@@ -58,7 +58,7 @@ W(f) \approx \frac{A_0^2}{\left| \frac{d f_i(t)}{dt} \right|_{t = f_i^{-1}(f)}}
 The Inverse Stationary Phase Approximation (ISPA) establishes the bijective mapping between the normalized Cumulative Energy Distribution $C_f(f) = \int_{-B/2}^{f} W(\nu) d\nu / \int_{-B/2}^{B/2} W(\nu) d\nu \in [0, 1]$ and normalized time $\tau(t) = (t + T/2)/T \in [0, 1]$ via numerical inversion $f_i(t) = C_f^{-1}\left(\frac{t + T/2}{T}\right)$.
 
 \subsection{FOSM Spectral Hybridization and Multi-Scale Fractal Seed}
-The target Power Spectral Density (PSD) in FOSM is formulated as:
+Conceptually, the proposed F-NLFM waveform operates physically as an authentic, continuous-phase Non-Linear Frequency Modulation in the time/RF domain, transmitting a strictly constant envelope with $\text{PAPR} = 0.00\text{ dB}$ for saturated SSPA power efficiency. In the stationary-phase design domain, its synthesis is formulated as a multi-tier hybrid spectral density $W_{\text{FOSM}}(f)$ integrating three deterministic layers:
 \begin{equation}
 W_{\text{FOSM}}(f) = W_{\text{base}}(f) \cdot H_{\text{corr}}(f) \cdot \left[ 1 + \epsilon \cdot \frac{M_f(f)}{\max|M_f|} \cdot \Lambda(f) \right]
 \label{eq:fosm_psd}
