@@ -1,0 +1,3 @@
+[submodule "hardware/plutosky"]
+	path = hardware/plutosky
+	url = https://github.com/mfsouza/PlutoSky_7020_AD936X_SDR.git
